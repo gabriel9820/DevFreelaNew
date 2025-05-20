@@ -1,11 +1,13 @@
+using DevFreela.Application.Models;
 using DevFreela.Core.Entities;
+using MediatR;
 
-namespace DevFreela.Application.Models;
+namespace DevFreela.Application.Commands.CreateProject;
 
-public class CreateProjectInputModel
+public class CreateProjectCommand : IRequest<ResultViewModel<int>>
 {
-    public string Title { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public string Title { get; set; }
+    public string Description { get; set; }
     public int ClientId { get; set; }
     public int FreelancerId { get; set; }
     public decimal TotalCost { get; set; }
