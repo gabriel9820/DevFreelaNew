@@ -20,11 +20,11 @@ public class CreateProjectHandler : IRequestHandler<CreateProjectCommand, Result
     {
         var project = request.ToEntity();
 
-        await _projectRepository.CreateAsync(project);
+        var id = await _projectRepository.CreateAsync(project);
 
-        var projectNotification = new ProjectCreatedNotification(project.Id, project.Title, project.TotalCost);
+        var projectNotification = new ProjectCreatedNotification(id, project.Title, project.TotalCost);
         await _mediator.Publish(projectNotification);
 
-        return ResultViewModel<int>.Success(project.Id);
+        return ResultViewModel<int>.Success(id);
     }
 }

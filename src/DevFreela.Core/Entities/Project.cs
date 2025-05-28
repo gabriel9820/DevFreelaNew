@@ -4,6 +4,8 @@ namespace DevFreela.Core.Entities;
 
 public class Project : BaseEntity
 {
+    public const string INVALID_STATUS_MESSAGE = "O status do projeto é inválido";
+
     public string Title { get; private set; }
     public string Description { get; private set; }
     public int ClientId { get; private set; }
@@ -39,43 +41,53 @@ public class Project : BaseEntity
 
     public void Start()
     {
-        if (Status == ProjectStatusEnum.Created)
+        if (Status != ProjectStatusEnum.Created)
         {
-            Status = ProjectStatusEnum.InProgress;
-            StartedAt = DateTime.UtcNow;
+            throw new InvalidOperationException(INVALID_STATUS_MESSAGE);
         }
+
+        Status = ProjectStatusEnum.InProgress;
+        StartedAt = DateTime.UtcNow;
     }
 
     public void SetPaymentPending()
     {
-        if (Status == ProjectStatusEnum.InProgress)
+        if (Status != ProjectStatusEnum.InProgress)
         {
-            Status = ProjectStatusEnum.PaymentPending;
+            throw new InvalidOperationException(INVALID_STATUS_MESSAGE);
         }
+
+        Status = ProjectStatusEnum.PaymentPending;
     }
 
     public void Complete()
     {
-        if (Status == ProjectStatusEnum.PaymentPending)
+        if (Status != ProjectStatusEnum.PaymentPending)
         {
-            Status = ProjectStatusEnum.Completed;
-            CompletedAt = DateTime.UtcNow;
+            throw new InvalidOperationException(INVALID_STATUS_MESSAGE);
         }
+
+        Status = ProjectStatusEnum.Completed;
+        CompletedAt = DateTime.UtcNow;
     }
 
     public void Suspend()
     {
-        if (Status == ProjectStatusEnum.Created || Status == ProjectStatusEnum.InProgress)
+        if (Status != ProjectStatusEnum.Created && Status != ProjectStatusEnum.InProgress)
         {
-            Status = ProjectStatusEnum.Suspended;
+            throw new InvalidOperationException(INVALID_STATUS_MESSAGE);
         }
+
+        Status = ProjectStatusEnum.Suspended;
     }
 
     public void Cancel()
     {
-        if (Status == ProjectStatusEnum.Created || Status == ProjectStatusEnum.Suspended)
+        if (Status != ProjectStatusEnum.Created && Status != ProjectStatusEnum.Suspended)
         {
-            Status = ProjectStatusEnum.Cancelled;
+            throw new InvalidOperationException(INVALID_STATUS_MESSAGE);
         }
+
+        Status = ProjectStatusEnum.Cancelled;
     }
 }
