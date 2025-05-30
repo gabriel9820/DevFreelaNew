@@ -8,6 +8,7 @@ using DevFreela.Application.Models;
 using DevFreela.Application.Queries.GetAllProjects;
 using DevFreela.Application.Queries.GetProjectById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -15,6 +16,7 @@ namespace DevFreela.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ProjectsController : ControllerBase
 {
     private readonly FreelanceTotalCostConfig _freelanceTotalCostConfig;
@@ -48,6 +50,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> Post(CreateProjectCommand command)
     {
         if (command.TotalCost < _freelanceTotalCostConfig.Minimum || command.TotalCost > _freelanceTotalCostConfig.Maximum)
@@ -79,6 +82,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> Put(int id, UpdateProjectCommand command)
     {
         var result = await _mediator.Send(command);
@@ -118,6 +122,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Client")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _mediator.Send(new DeleteProjectCommand(id));

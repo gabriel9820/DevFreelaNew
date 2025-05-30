@@ -1,13 +1,16 @@
 using DevFreela.Application.Commands.AddUserSkills;
 using DevFreela.Application.Commands.CreateUser;
+using DevFreela.Application.Commands.Login;
 using DevFreela.Application.Queries.GetUserById;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DevFreela.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -30,8 +33,9 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Post(CreateUserCommand command)
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Register(CreateUserCommand command)
     {
         var result = await _mediator.Send(command);
 
@@ -41,6 +45,20 @@ public class UsersController : ControllerBase
         }
 
         return CreatedAtAction(nameof(GetById), new { id = result.Data }, command);
+    }
+
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(LoginCommand command)
+    {
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Message);
+        }
+
+        return Ok(result);
     }
 
     [HttpPatch("{id:int}/skills")]
