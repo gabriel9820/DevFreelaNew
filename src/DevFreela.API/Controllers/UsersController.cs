@@ -1,6 +1,9 @@
 using DevFreela.Application.Commands.AddUserSkills;
 using DevFreela.Application.Commands.CreateUser;
 using DevFreela.Application.Commands.Login;
+using DevFreela.Application.Commands.PasswordRecoveryRequest;
+using DevFreela.Application.Commands.PasswordRecoveryValidate;
+using DevFreela.Application.Commands.PasswordRecoveryChange;
 using DevFreela.Application.Queries.GetUserById;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
@@ -44,7 +47,7 @@ public class UsersController : ControllerBase
             return BadRequest(result.Message);
         }
 
-        return CreatedAtAction(nameof(GetById), new { id = result.Data }, command);
+        return CreatedAtAction(nameof(GetById), new { id = result.Data }, default);
     }
 
     [HttpPost("login")]
@@ -59,6 +62,48 @@ public class UsersController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+    [HttpPost("password-recovery/request")]
+    [AllowAnonymous]
+    public async Task<IActionResult> PasswordRecoveryRequest(PasswordRecoveryRequestCommand command)
+    {
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Message);
+        }
+
+        return NoContent();
+    }
+
+    [HttpPost("password-recovery/validate")]
+    [AllowAnonymous]
+    public async Task<IActionResult> PasswordRecoveryValidate(PasswordRecoveryValidateCommand command)
+    {
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Message);
+        }
+
+        return NoContent();
+    }
+
+    [HttpPost("password-recovery/change")]
+    [AllowAnonymous]
+    public async Task<IActionResult> PasswordRecoveryChange(PasswordRecoveryChangeCommand command)
+    {
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Message);
+        }
+
+        return NoContent();
     }
 
     [HttpPatch("{id:int}/skills")]

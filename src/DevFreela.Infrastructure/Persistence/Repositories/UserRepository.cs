@@ -34,7 +34,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _dbContext.Users.AsNoTracking().SingleOrDefaultAsync(x => x.Email == email);
+        return await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email);
     }
 
     public async Task<User?> GetDetailsByIdAsync(int id)
@@ -43,5 +43,10 @@ public class UserRepository : IUserRepository
             .Include(x => x.Skills)
             .ThenInclude(x => x.Skill)
             .SingleOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task UpdateAsync()
+    {
+        await _dbContext.SaveChangesAsync();
     }
 }

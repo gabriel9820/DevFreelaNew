@@ -34,4 +34,9 @@ public class User : BaseEntity
     {
         return Password == hashedPassword;
     }
+
+    public void UpdatePassword(string hashedPassword)
+    {
+        Password = hashedPassword;
+    }
 }
